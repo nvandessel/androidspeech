@@ -3,7 +3,7 @@ apply from: 'maven-push.gradle'
 
 def versionMajor = 2
 def versionMinor = 0
-def versionPatch = 5
+def versionPatch = 4
 
 android {
     compileSdkVersion 29
@@ -48,13 +48,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'org.mozilla.deepspeech:libdeepspeech:0.8.2@aar'
+    implementation 'org.mozilla.deepspeech:libdeepspeech:0.6.1@aar'
     implementation 'org.gagravarr:vorbis-java-core:0.8'
     implementation 'com.github.axet:opus:1.0.2'
     implementation 'com.github.axet:jssrc:1.0.2-2'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation files('libs\\classes.jar')
 
     compileOnly 'com.loopj.android:android-async-http:1.4.9'
     compileOnly "org.mozilla.geckoview:geckoview-nightly-x86_64:79.0.20200604092907"
