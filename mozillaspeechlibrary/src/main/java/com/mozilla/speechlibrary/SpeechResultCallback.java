@@ -20,6 +20,7 @@ public interface SpeechResultCallback {
     void onMicActivity(double fftsum);
     void onDecoding();
     void onSTTResult(@Nullable STTResult result);
+    void onIntDecResult(@Nullable STTResult result);
     void onNoVoice();
     void onError(@ErrorType int errorType, @Nullable String error);
 }

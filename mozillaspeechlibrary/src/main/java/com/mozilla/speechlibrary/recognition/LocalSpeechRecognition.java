@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.mozilla.speechlibrary.SpeechResultCallback;
 import com.mozilla.speechlibrary.SpeechServiceSettings;
 import com.mozilla.speechlibrary.stt.STTLocalClient;
+import com.mozilla.speechlibrary.stt.STTResult;
 
 public class LocalSpeechRecognition extends SpeechRecognition {
 

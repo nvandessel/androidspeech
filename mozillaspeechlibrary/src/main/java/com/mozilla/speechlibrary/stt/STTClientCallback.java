@@ -6,4 +6,5 @@ public interface STTClientCallback {
     void onSTTStart();
     void onSTTError(@NonNull String error);
     void onSTTFinished(@NonNull STTResult result);
+    void onSTTIntDec(@NonNull STTResult result);
 }

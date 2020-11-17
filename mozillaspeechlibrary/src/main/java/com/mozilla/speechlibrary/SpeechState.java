@@ -6,5 +6,6 @@ public enum SpeechState {
     STT_RESULT,
     START_LISTEN,
     NO_VOICE,
-    ERROR
+    ERROR,
+    INT_DEC
 }

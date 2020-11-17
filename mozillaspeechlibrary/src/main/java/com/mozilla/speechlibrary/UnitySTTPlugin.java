@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.mozilla.speechlibrary.recognition.LocalSpeechRecognition;
 import com.mozilla.speechlibrary.stt.STTResult;
+import com.mozilla.speechlibrary.utils.ModelUtils;
 import com.unity3d.player.UnityPlayer;
 
 public class UnitySTTPlugin implements SpeechResultCallback  {
@@ -35,10 +36,17 @@ public class UnitySTTPlugin implements SpeechResultCallback  {
     public void Initialize(@NonNull Context context){
         _context = context;
         _localSpeechRecognition = new LocalSpeechRecognition(_context);
+
+        if (ModelUtils.isReady(_modelPath)){
+            Log.d(TAG, "Initialize() ModelUtils.isReady = true");
+        }else{
+            Log.e(TAG, "Initialize() ModelUtils.isReady = false");
+        }
+
         SpeechServiceSettings.Builder builder = new SpeechServiceSettings.Builder()
                 .withUseDeepSpeech(true)
                 .withModelPath(_modelPath);
-        _localSpeechRecognition.start(builder.build(), this.getInstance());
+        _localSpeechRecognition.start(builder.build(), this);
     }
 
     // SpeechResultCallback
@@ -59,7 +67,12 @@ public class UnitySTTPlugin implements SpeechResultCallback  {
 
     @Override
     public void onSTTResult(@Nullable STTResult result) {
-        SendUnityMessage(SPEECH_STATUS_CHANGED, String.format("Success: %s\n", result.mTranscription));
+        SendUnityMessage(SPEECH_STATUS_CHANGED, String.format("Success: %s\n", result.mTranscription + "\n"));
+    }
+
+    @Override
+    public void onIntDecResult(@Nullable STTResult result) {
+        SendUnityMessage(SPEECH_STATUS_CHANGED, "Int:" + result.mTranscription + "\n");
     }
 
     @Override
@@ -69,7 +82,7 @@ public class UnitySTTPlugin implements SpeechResultCallback  {
 
     @Override
     public void onError(int errorType, @Nullable String error) {
-        SendUnityMessage(SPEECH_STATUS_CHANGED, String.format("Error:", error, "\n"));
+        SendUnityMessage(SPEECH_STATUS_CHANGED, "Error:" + error);
     }
 
     //Unity Implementation
