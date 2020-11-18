@@ -34,7 +34,7 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
     private Queue<short[]> mBuffers;
     private boolean mEndOfStream;
 
-    private String _intDec;
+    private String mIntDec;
 
     public STTLocalClient(@NonNull Context context,
                    @NonNull SpeechServiceSettings settings,
@@ -143,10 +143,10 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
 
     private void int_dec(){
         String curDec = mModel.intermediateDecode(mStreamingState);
-        if (curDec.equals(_intDec)) { return; }
+        if (curDec.equals(mIntDec)) { return; }
 
-        _intDec = curDec;
-        STTResult sttResult = new STTResult(_intDec, 1.0f);
+        mIntDec = curDec;
+        STTResult sttResult = new STTResult(mIntDec, 1.0f);
         mCallback.onSTTIntDec(sttResult);
     }
 
