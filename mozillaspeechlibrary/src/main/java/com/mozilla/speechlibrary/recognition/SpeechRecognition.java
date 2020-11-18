@@ -28,7 +28,7 @@ public abstract class SpeechRecognition implements STTClientCallback {
     private static final int CHANNELS = 1;
     private static final int FRAME_SIZE = 160;
     private static final int MAX_SILENCE = 1500;
-    private static final int MIN_VOICE = 250;
+    private static final int MIN_VOICE = 150;
 
     @NonNull
     Context mContext;

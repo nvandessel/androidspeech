@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.mozilla.speechlibrary.recognition.LocalSpeechRecognition;
 import com.mozilla.speechlibrary.stt.STTResult;
 import com.mozilla.speechlibrary.utils.ModelUtils;
 import com.unity3d.player.UnityPlayer;
@@ -22,31 +21,29 @@ public class UnitySTTPlugin implements SpeechResultCallback  {
     private static final String SPEECH_STATUS_CHANGED = "onSpeechStatusChanged";
     private static final String MODEL_PATH_REQUEST = "onModelPathRequest";
 
-    private String _modelPath;
-    private LocalSpeechRecognition _localSpeechRecognition;
-
-    @NonNull
-    private Context _context;
+    private String mModelPath;
+    private SpeechService mSpeechService;
 
     private UnitySTTPlugin(){
         Log.d(TAG, "UnitySTTPlugin has been created");
-        _modelPath = Environment.getExternalStorageDirectory() + "/deepspeech";
+        mModelPath = Environment.getExternalStorageDirectory() + "/deepspeech";
     }
 
-    public void Initialize(@NonNull Context context){
-        _context = context;
-        _localSpeechRecognition = new LocalSpeechRecognition(_context);
-
-        if (ModelUtils.isReady(_modelPath)){
-            Log.d(TAG, "Initialize() ModelUtils.isReady = true");
-        }else{
-            Log.e(TAG, "Initialize() ModelUtils.isReady = false");
+    public void initialize(@NonNull Context context){
+        if (!ModelUtils.isReady(mModelPath)){
+            Log.e(TAG, "ModelPath is not ready! Cannot Initialize STT Service");
+            return;
         }
 
+        if (mSpeechService == null) { mSpeechService = new SpeechService(context); }
         SpeechServiceSettings.Builder builder = new SpeechServiceSettings.Builder()
                 .withUseDeepSpeech(true)
-                .withModelPath(_modelPath);
-        _localSpeechRecognition.start(builder.build(), this);
+                .withModelPath(mModelPath);
+        mSpeechService.start(builder.build(), this);
+    }
+
+    public void stopSTT(){
+        mSpeechService.stop();
     }
 
     // SpeechResultCallback
@@ -92,7 +89,7 @@ public class UnitySTTPlugin implements SpeechResultCallback  {
         UnityPlayer.UnitySendMessage(GAME_OBJECT_NAME, methodName, message);
     }
 
-    public String getModelPath() { return this._modelPath; }
+    public String getModelPath() { return this.mModelPath; }
 
     public void publishModelPath(){
         SendUnityMessage(MODEL_PATH_REQUEST, this.getModelPath());
