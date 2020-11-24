@@ -34,6 +34,8 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
     private Queue<short[]> mBuffers;
     private boolean mEndOfStream;
 
+    private String mIntDec;
+
     public STTLocalClient(@NonNull Context context,
                    @NonNull SpeechServiceSettings settings,
                    @NonNull STTClientCallback callback) {
@@ -127,6 +129,15 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
         mIsRunning = false;
     }
 
+    private void int_dec(){
+        String curDec = mModel.intermediateDecode(mStreamingState);
+        if (curDec.equals(mIntDec)) { return; }
+
+        mIntDec = curDec;
+        STTResult sttResult = new STTResult(mIntDec, 1.0f);
+        mCallback.onSTTIntDec(sttResult);
+    }
+
     @Override
     public void run() {
         mBuffers = new ConcurrentLinkedQueue<>();
@@ -139,6 +150,8 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
             }
 
             this.mModel.feedAudioContent(mStreamingState, aBuffer, aBuffer.length);
+
+            int_dec();
 
             // DEBUG
             if (mKeepClips) {

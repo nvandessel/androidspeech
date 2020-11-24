@@ -56,6 +56,9 @@ public class SpeechResultReceiver extends ResultReceiver {
                     case ERROR:
                         receiver.onError(resultData.getInt(ERROR_TYPE), resultData.getString(PARAM_RESULT));
                         break;
+                    case INT_DEC:
+                        receiver.onIntDecResult((STTResult)resultData.getSerializable(PARAM_RESULT));
+                        break;
                 }
             });
 

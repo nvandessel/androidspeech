@@ -18,6 +18,8 @@ import com.mozilla.speechlibrary.SpeechServiceSettings;
 import com.mozilla.speechlibrary.stt.STTClient;
 import com.mozilla.speechlibrary.stt.STTClientCallback;
 
+import org.mozilla.deepspeech.libdeepspeech.DeepSpeechStreamingState;
+
 import java.util.Arrays;
 
 public abstract class SpeechRecognition implements STTClientCallback {
@@ -26,7 +28,7 @@ public abstract class SpeechRecognition implements STTClientCallback {
     private static final int CHANNELS = 1;
     private static final int FRAME_SIZE = 160;
     private static final int MAX_SILENCE = 1500;
-    private static final int MIN_VOICE = 250;
+    private static final int MIN_VOICE = 150;
 
     @NonNull
     Context mContext;
@@ -83,10 +85,10 @@ public abstract class SpeechRecognition implements STTClientCallback {
                 nshorts = mRecorder.read(mBufTemp, 0, mBufTemp.length);
 
                 vad = mVad.feed(mBufTemp, nshorts);
-                double[] fft =  Sound.fft(mBufTemp, 0, nshorts);
-                double fftsum = Arrays.stream(fft).sum()/fft.length;
+                //double[] fft =  Sound.fft(mBufTemp, 0, nshorts);
+                //double fftsum = Arrays.stream(fft).sum()/fft.length;
 
-                mCallback.onMicActivity(fftsum);
+                //mCallback.onMicActivity(fftsum);
 
                 long dtdepois = System.currentTimeMillis();
 
@@ -188,6 +190,9 @@ public abstract class SpeechRecognition implements STTClientCallback {
     }
 
     @Override
+    public void onSTTIntDec(@NonNull STTResult result) { mCallback.onIntDecResult(result); }
+
+    @Override
     public void onSTTError(@NonNull String error) {
         mCallback.onError(SpeechResultCallback.SPEECH_ERROR, error);
     }
@@ -221,6 +226,13 @@ public abstract class SpeechRecognition implements STTClientCallback {
             Bundle bundle = new Bundle();
             bundle.putSerializable(SpeechResultReceiver.PARAM_RESULT, result);
             mReceiver.send(SpeechState.STT_RESULT.ordinal(), bundle);
+        }
+
+        @Override
+        public void onIntDecResult(@Nullable STTResult result){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(SpeechResultReceiver.PARAM_RESULT, result);
+            mReceiver.send(SpeechState.INT_DEC.ordinal(), bundle);
         }
 
         @Override
