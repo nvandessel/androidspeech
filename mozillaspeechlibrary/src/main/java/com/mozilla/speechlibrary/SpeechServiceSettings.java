@@ -1,11 +1,15 @@
 package com.mozilla.speechlibrary;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 
 public class SpeechServiceSettings implements Serializable {
+
+    private final String TAG = "STTSpeechServiceSettings\uD83D\uDC7D";
 
     private boolean mUseStoreSamples;
     private boolean mUseStoreTranscriptions;
@@ -51,6 +55,7 @@ public class SpeechServiceSettings implements Serializable {
     }
 
     public static class Builder {
+        private final String TAG = "STTSettingsBuilder\uD83D\uDC7D";
 
         private boolean storeSamples;
         private boolean storeTranscriptions;
@@ -60,6 +65,7 @@ public class SpeechServiceSettings implements Serializable {
         private String modelPath;
 
         public Builder() {
+            Log.d(TAG, "Builder: init");
             storeSamples = false;
             storeTranscriptions = false;
             language = "en-US";
@@ -69,31 +75,37 @@ public class SpeechServiceSettings implements Serializable {
         }
 
         public Builder withStoreSamples(boolean storeSamples) {
+            Log.d(TAG, "withStoreSamples() called with: storeSamples = [" + storeSamples + "]");
             this.storeSamples = storeSamples;
             return this;
         }
 
         public Builder withStoreTranscriptions(boolean storeTranscriptions) {
+            Log.d(TAG, "withStoreTranscriptions() called with: storeTranscriptions = [" + storeTranscriptions + "]");
             this.storeTranscriptions = storeTranscriptions;
             return this;
         }
 
         public Builder withLanguage(@NonNull String language) {
+            Log.d(TAG, "withLanguage() called with: language = [" + language + "]");
             this.language = language;
             return this;
         }
 
         public Builder withUseDeepSpeech(boolean useDeepSpeech){
+            Log.d(TAG, "withUseDeepSpeech() called with: useDeepSpeech = [" + useDeepSpeech + "]");
             this.useDeepSpeech = useDeepSpeech;
             return this;
         }
 
         public Builder withModelPath(@NonNull String modelPath){
+            Log.d(TAG, "withModelPath() called with: modelPath = [" + modelPath + "]");
             this.modelPath = modelPath;
             return this;
         }
 
         public Builder withProductTag(@NonNull String productTag){
+            Log.d(TAG, "withProductTag() called with: productTag = [" + productTag + "]");
             this.productTag = productTag;
             return this;
         }

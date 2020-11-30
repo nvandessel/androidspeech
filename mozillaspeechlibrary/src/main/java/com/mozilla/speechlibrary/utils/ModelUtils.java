@@ -1,17 +1,20 @@
 package com.mozilla.speechlibrary.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class ModelUtils {
-
+    private static final String TAG = "STTModelUtils";
     private static String MODEL_VERSION = "v0.9.1";
     private static String BASE_MODEL_URL = "https://github.com/lissyx/DeepSpeech/releases/download";
     private static final String MODELS_FOLDER = "models";
@@ -129,6 +132,7 @@ public class ModelUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static HashMap<String, String> installedModels(@NonNull Context context, @NonNull String version) {
         HashMap<String, String> models = new HashMap<>();
         File outputFolder = context.getExternalFilesDir(MODELS_FOLDER);
@@ -146,12 +150,18 @@ public class ModelUtils {
     }
 
     public static boolean isReady(@Nullable String modelPath) {
+        Log.d(TAG, "isReady() called with: modelPath = [" + modelPath + "]");
         if (modelPath == null) {
             return false;
         }
-        return (new File(getTFLiteFolder(modelPath)).exists()
-                && (new File(getScorerFolder(modelPath)).exists() || (new File(modelPath + "/.noUseDecoder")).exists())
-                && new File(getInfoJsonFolder(modelPath)).exists());
+
+        boolean tflite = new File(getTFLiteFolder(modelPath)).exists();
+        boolean scorer = new File(getScorerFolder(modelPath)).exists();
+        boolean noDecoder = new File(modelPath + "/.noUseDecoder").exists();
+        boolean infoJson =  new File(getInfoJsonFolder(modelPath)).exists();
+
+        Log.d(TAG, "isReady: tflite = ["+ tflite +"], scorer = [" + scorer + "], noDecoder = ["+ noDecoder +"], infoJson = ["+ infoJson +"]");
+        return (tflite && (scorer || noDecoder) && infoJson);
     }
 
     @NonNull
