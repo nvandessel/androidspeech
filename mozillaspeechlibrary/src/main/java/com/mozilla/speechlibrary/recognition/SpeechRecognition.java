@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioRecord;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 
 public abstract class SpeechRecognition implements STTClientCallback {
 
+    private static final String TAG = "SpeechRecognition";
     private static final int SAMPLE_RATE = 16000;
     private static final int CHANNELS = 1;
     private static final int FRAME_SIZE = 160;
@@ -41,11 +43,13 @@ public abstract class SpeechRecognition implements STTClientCallback {
     private AudioRecord mRecorder;
 
     SpeechRecognition(@NonNull Context context) {
+        Log.d(TAG, "SpeechRecognition() called with: context = [" + context + "]");
         mContext = context;
         mReceiver = new SpeechResultReceiver(new Handler(context.getMainLooper()));
     }
 
     public void start(@NonNull SpeechServiceSettings settings, @NonNull SpeechResultCallback callback) {
+        Log.d(TAG, "start() called with: settings = [" + settings + "], callback = [" + callback + "]");
         mDelegate = callback;
         mReceiver.addReceiver(mDelegate);
         mIsRunning = true;

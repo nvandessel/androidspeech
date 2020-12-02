@@ -9,14 +9,14 @@ import java.io.Serializable;
 
 public class SpeechServiceSettings implements Serializable {
 
-    private final String TAG = "STTSpeechServiceSettings\uD83D\uDC7D";
+    private final String TAG = "STTSpeechServiceSettings";
 
-    private boolean mUseStoreSamples;
-    private boolean mUseStoreTranscriptions;
-    private String mLanguage;
-    private String mProductTag;
-    private boolean mUseDeepSpeech;
-    private String mModelPath;
+    private final boolean mUseStoreSamples;
+    private final boolean mUseStoreTranscriptions;
+    private final String mLanguage;
+    private final String mProductTag;
+    private final boolean mUseDeepSpeech;
+    private final String mModelPath;
 
     public SpeechServiceSettings(@NonNull Builder builder) {
         mUseStoreSamples = builder.storeSamples;
@@ -55,7 +55,7 @@ public class SpeechServiceSettings implements Serializable {
     }
 
     public static class Builder {
-        private final String TAG = "STTSettingsBuilder\uD83D\uDC7D";
+        private final String TAG = "STTSettingsBuilder";
 
         private boolean storeSamples;
         private boolean storeTranscriptions;
@@ -65,7 +65,7 @@ public class SpeechServiceSettings implements Serializable {
         private String modelPath;
 
         public Builder() {
-            Log.d(TAG, "Builder: init");
+            Log.v(TAG, "Builder: init");
             storeSamples = false;
             storeTranscriptions = false;
             language = "en-US";
@@ -75,37 +75,37 @@ public class SpeechServiceSettings implements Serializable {
         }
 
         public Builder withStoreSamples(boolean storeSamples) {
-            Log.d(TAG, "withStoreSamples() called with: storeSamples = [" + storeSamples + "]");
+            Log.v(TAG, "withStoreSamples() called with: storeSamples = [" + storeSamples + "]");
             this.storeSamples = storeSamples;
             return this;
         }
 
         public Builder withStoreTranscriptions(boolean storeTranscriptions) {
-            Log.d(TAG, "withStoreTranscriptions() called with: storeTranscriptions = [" + storeTranscriptions + "]");
+            Log.v(TAG, "withStoreTranscriptions() called with: storeTranscriptions = [" + storeTranscriptions + "]");
             this.storeTranscriptions = storeTranscriptions;
             return this;
         }
 
         public Builder withLanguage(@NonNull String language) {
-            Log.d(TAG, "withLanguage() called with: language = [" + language + "]");
+            Log.v(TAG, "withLanguage() called with: language = [" + language + "]");
             this.language = language;
             return this;
         }
 
         public Builder withUseDeepSpeech(boolean useDeepSpeech){
-            Log.d(TAG, "withUseDeepSpeech() called with: useDeepSpeech = [" + useDeepSpeech + "]");
+            Log.v(TAG, "withUseDeepSpeech() called with: useDeepSpeech = [" + useDeepSpeech + "]");
             this.useDeepSpeech = useDeepSpeech;
             return this;
         }
 
         public Builder withModelPath(@NonNull String modelPath){
-            Log.d(TAG, "withModelPath() called with: modelPath = [" + modelPath + "]");
+            Log.v(TAG, "withModelPath() called with: modelPath = [" + modelPath + "]");
             this.modelPath = modelPath;
             return this;
         }
 
         public Builder withProductTag(@NonNull String productTag){
-            Log.d(TAG, "withProductTag() called with: productTag = [" + productTag + "]");
+            Log.v(TAG, "withProductTag() called with: productTag = [" + productTag + "]");
             this.productTag = productTag;
             return this;
         }
@@ -113,5 +113,17 @@ public class SpeechServiceSettings implements Serializable {
         public SpeechServiceSettings build(){
             return new SpeechServiceSettings(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "SpeechServiceSettings{" +
+                ", mUseStoreSamples=" + mUseStoreSamples +
+                ", mUseStoreTranscriptions=" + mUseStoreTranscriptions +
+                ", mLanguage='" + mLanguage + '\'' +
+                ", mProductTag='" + mProductTag + '\'' +
+                ", mUseDeepSpeech=" + mUseDeepSpeech +
+                ", mModelPath='" + mModelPath + '\'' +
+                '}';
     }
 }

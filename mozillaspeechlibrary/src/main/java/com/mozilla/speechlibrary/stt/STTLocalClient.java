@@ -50,7 +50,7 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
             mCallback.onSTTError("STT Error: Model not ready");
             return;
         }
-        Log.d(TAG, "STTLocalClient: Model is Ready");
+        Log.i(TAG, "STTLocalClient: Model is Ready");
 
         try {
             StringBuilder infoJsonContent = new StringBuilder();
@@ -79,32 +79,42 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
         Log.d(TAG, "STTLocalClient: keepClips=" + mKeepClips);
         Log.d(TAG, "STTLocalClient: useDecoder=" + useDecoder);
 
-        if (mModel == null) {
-            Log.d(TAG, "STTLocalClient: new DeepSpeechModel(\"" + ModelUtils.getTFLiteFolder(modelRoot) + "\")");
-            mModel = new DeepSpeechModel(ModelUtils.getTFLiteFolder(modelRoot));
+        try {
+            if (mModel == null) {
+                Log.d(TAG, "STTLocalClient: new DeepSpeechModel(\"" + ModelUtils.getTFLiteFolder(modelRoot) + "\")");
+                mModel = new DeepSpeechModel(ModelUtils.getTFLiteFolder(modelRoot));
+            }
+        } catch (RuntimeException e) {
+            Log.e(TAG, "STTLocalClient: Could not instantiate DeepSpeech Model", e);
+            throw e;
+        } catch (Exception e) {
+            Log.e(TAG, "STTLocalClient: this should never happen", e);
+            throw e;
         }
 
         if (useDecoder) {
-            Log.d(TAG, "STTLocalClient: using Decoder from <"+ModelUtils.getScorerFolder(modelRoot)+">");
+            Log.d(TAG, "STTLocalClient: using Decoder from <" + ModelUtils.getScorerFolder(modelRoot) + ">");
             mModel.enableExternalScorer(ModelUtils.getScorerFolder(modelRoot));
         }
 
         if (mKeepClips) {
             try {
-                String clipFile= modelRoot + "/clip_" + clipNumber + ".wav";
+                String clipFile = modelRoot + "/clip_" + clipNumber + ".wav";
                 clipDebug = new FileOutputStream(clipFile).getChannel();
-                Log.d(TAG, "STTLocalClient: keeping clip as  <"+clipFile+">");
-            } catch (Exception ignored) { }
+                Log.d(TAG, "STTLocalClient: keeping clip as  <" + clipFile + ">");
+            } catch (Exception ignored) {
+            }
         }
 
         mStreamingState = mModel.createStream();
         mIsRunning = true;
         mEndOfStream = false;
+
     }
 
     @Override
     public void encode(final short[] aBuffer, final int pos, final int len) {
-        Log.d(TAG, "encode() called with: aBuffer = [" + aBuffer + "], pos = [" + pos + "], len = [" + len + "]");
+        Log.v(TAG, "encode() called with: aBuffer = [" + aBuffer + "], pos = [" + pos + "], len = [" + len + "]");
         mBuffers.add(aBuffer);
     }
 
@@ -131,7 +141,7 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
         String finalDecoded = mModel.finishStream(mStreamingState);
 
         STTResult sttResult = new STTResult(finalDecoded, (float)(1.0));
-        Log.d(TAG, "decode: sttResult="+sttResult);
+        Log.i(TAG, "decode: sttResult="+sttResult);
         mCallback.onSTTFinished(sttResult);
 
         closeModel();
@@ -146,7 +156,7 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
 
         mIntDec = curDec;
         STTResult sttResult = new STTResult(mIntDec, 1.0f);
-        Log.d(TAG, "int_dec: sttResult="+sttResult);
+        Log.i(TAG, "int_dec: sttResult="+sttResult);
         mCallback.onSTTIntDec(sttResult);
     }
 
@@ -159,19 +169,19 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
             short[] aBuffer = mBuffers.poll();
 
             if (aBuffer == null) {
-                Log.d(TAG, "run: null aBuffer");
+                Log.v(TAG, "run: null aBuffer");
                 continue;
             }
-            Log.d(TAG, "run: feeding audio content to model");
+            Log.v(TAG, "run: feeding audio content to model");
 
             this.mModel.feedAudioContent(mStreamingState, aBuffer, aBuffer.length);
 
-            Log.d(TAG, "run: intermediary decoding");
+            Log.v(TAG, "run: intermediary decoding");
             int_dec();
 
             // DEBUG
             if (mKeepClips) {
-                Log.d(TAG, "run: keeping clip: saving clip");
+                Log.i(TAG, "run: keeping clip: saving clip");
                 ByteBuffer myByteBuffer = ByteBuffer.allocate(aBuffer.length * 2);
                 myByteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -185,7 +195,7 @@ public class STTLocalClient extends STTBaseClient implements Runnable {
             }
         }
 
-        Log.d(TAG, "run: decoding");
+        Log.v(TAG, "run: decoding");
         decode();
     }
 }

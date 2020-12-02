@@ -16,7 +16,7 @@ import java.util.ConcurrentModificationException;
 
 public class SpeechResultReceiver extends ResultReceiver {
 
-    private static final String TAG = "STTResultReceiver\uD83D\uDC7D";
+    private static final String TAG = "STTResultReceiver";
     public static final String ERROR_TYPE = "errorType";
     public static final String PARAM_RESULT = "result";
     public static final String PARAM_FFT_SUM = "fftsum";

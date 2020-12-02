@@ -10,8 +10,16 @@ public class STTResult implements Serializable {
     public float mConfidence;
 
     STTResult(String aTranscription, float aConfidence) {
-        Log.d(TAG, "STTResult() called with: aTranscription = [" + aTranscription + "], aConfidence = [" + aConfidence + "]");
+        Log.i(TAG, "STTResult() called with: aTranscription = [" + aTranscription + "], aConfidence = [" + aConfidence + "]");
         this.mTranscription = aTranscription;
         this.mConfidence = aConfidence;
+    }
+
+    @Override
+    public String toString() {
+        return "STTResult{" +
+                "mTranscription='" + mTranscription + '\'' +
+                ", mConfidence=" + mConfidence +
+                '}';
     }
 }

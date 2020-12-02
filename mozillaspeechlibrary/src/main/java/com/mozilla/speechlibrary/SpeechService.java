@@ -16,7 +16,7 @@ import org.mozilla.geckoview.GeckoWebExecutor;
 import java.util.concurrent.Executors;
 
 public class SpeechService {
-    private final String TAG="STTSpeechService\uD83D\uDC7D";
+    private final String TAG="STTSpeechService";
     private Context mContext;
     private SpeechRecognition mSpeechRecognition;
 
